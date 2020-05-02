@@ -3,14 +3,14 @@ import pickle
 import pandas as pd
 import numpy as np
 from validate import validate_json
-from pytorch_model import Net
+from pytorch_model import create_class_instance
 import torch
 from torch.autograd import Variable
 
 
-CATBOOST_MODEL = CatBoostClassifier().load_model(fname='catboost_model')
-GRADIENT_BOOSTING_CLASSIFIER_MODEL = pickle.load(open("gradient_boosting_classifier_model.dat", "rb"))
-PYTORCH_MODEL = Net()
+CATBOOST_MODEL = CatBoostClassifier().load_model(fname="models/catboost_model")
+GRADIENT_BOOSTING_CLASSIFIER_MODEL = pickle.load(open("models/gradient_boosting_classifier_model.dat", "rb"))
+PYTORCH_MODEL = create_class_instance()
 MODEL_MAPPING = {"001": CATBOOST_MODEL, "002": GRADIENT_BOOSTING_CLASSIFIER_MODEL, "003": PYTORCH_MODEL}
 
 
@@ -86,7 +86,6 @@ def predict(input: dict) -> list:
     for mod in input['models']:
         model = MODEL_MAPPING.get(mod, False)
         if model and mod == '003':
-            model.load_state_dict(torch.load('torch.pth'))
             X_test = df.iloc[:, :].values
             with torch.no_grad():
                 t_ = model(Variable(torch.FloatTensor(X_test.astype(int)), requires_grad=False))
