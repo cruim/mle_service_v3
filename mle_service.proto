@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+
+message Request {
+    repeated string models = 1;
+    RequestData data = 2;
+
+}
+
+message RequestData {
+    int32 pclass = 1;
+    string name = 2;
+    string sex = 3;
+    int32 sibsp = 4;
+    int32 parch = 5;
+    string embarked = 6;
+    int32 fare = 7;
+    int32 age = 8;
+}
+
+message Responce{
+    repeated ResponceModel data = 1;
+    string message = 2;
+    int32 code = 3;
+}
+
+message ResponceModel {
+    string model_id = 1;
+    string value = 2;
+    string result_code = 3;
+    string error = 4;
+}
+
+service MleService {
+    rpc get_predict(Request) returns (Responce) {};
+}
